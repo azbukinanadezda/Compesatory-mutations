@@ -1,0 +1,106 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r}
+library(ggalluvial)
+```
+```{r}
+df <- read.csv(file = 'PicS2_percent.csv', sep = ';', dec=',')
+#df$N<-df$N/2
+df$N <-df$N * 100
+df
+```
+```{r}
+df1 <-df[df$dataset=='Caldraru_2020',]
+```
+```{r}
+is_alluvia_form(df1)
+```
+```{r}
+ggplot(df1,
+       aes(y = N, axis1 = RIN, axis2 = Type)) +
+  geom_alluvium(aes(fill = Type), width = 1/12) +
+  geom_stratum(width = 1/12, fill = "grey", color = "black") +
+  geom_label(stat = "stratum", aes(label = after_stat(stratum))) +
+  scale_x_discrete(limits = c("RIN", "Type"), expand = c(.05, .05)) +
+  scale_fill_brewer(type = "qual", palette = "Set1") +
+  ggtitle("A. Caldraru_2020")
+```
+```{r}
+df1
+```
+
+
+```{r}
+df1 <-df[df$dataset=='Pucci_2016',]
+
+ggplot(df1,
+       aes(y = N, axis1 = RIN, axis2 = Type)) +
+  geom_alluvium(aes(fill = Type), width = 1/12) +
+  geom_stratum(width = 1/12, fill = "grey", color = "black") +
+  geom_label(stat = "stratum", aes(label = after_stat(stratum))) +
+  scale_x_discrete(limits = c("RIN", "Type"), expand = c(.05, .05)) +
+  scale_fill_brewer(type = "qual", palette = "Set1") +
+  ggtitle("B. Pucci_2016")
+
+```
+```{r}
+df1 <-df[df$dataset=='SKEMPI',]
+
+ggplot(df1,
+       aes(y = N, axis1 = RIN, axis2 = Type)) +
+  geom_alluvium(aes(fill = Type), width = 1/12) +
+  geom_stratum(width = 1/12, fill = "grey", color = "black") +
+  geom_label(stat = "stratum", aes(label = after_stat(stratum))) +
+  scale_x_discrete(limits = c("RIN", "Type"), expand = c(.05, .05)) +
+  scale_fill_brewer(type = "qual", palette = "Set1") +
+  ggtitle("C. SKEMPI")
+```
+```{r}
+df1 <-df[df$dataset=='ProTherm',]
+
+ggplot(df1,
+       aes(y = N, axis1 = RIN, axis2 = Type)) +
+  geom_alluvium(aes(fill = Type), width = 1/12) +
+  geom_stratum(width = 1/12, fill = "grey", color = "black") +
+  geom_label(stat = "stratum", aes(label = after_stat(stratum))) +
+  scale_x_discrete(limits = c("RIN", "Type"), expand = c(.05, .05)) +
+  scale_fill_brewer(type = "qual", palette = "Set1") +
+  ggtitle("D. ProTherm")
+``` 
+```{r}
+df <- read.csv(file = 'PicS2.csv', sep = ';')
+df1 <-df[df$dataset=='ProTherm',]
+df1
+```
+
+```{r}
+totalback <- sum(df1[df1$Type=='Background','N'])
+totalmut <- sum(df1[df1$Type=='Mutations','N'])
+```
+
+```{r}
+for (elem in c('PPI', 'Surface', 'Core', 'MiscInt','?')){
+  nback = df1[(df1$Type=='Background')&(df1$RIN==elem),'N']
+  nmut = df1[(df1$Type=='Mutations')&(df1$RIN==elem),'N']
+  dat <- data.frame(c(nback, nmut), c(totalback-nback, totalmut-nmut))
+  
+  print(elem)
+  print(fisher.test(dat))
+}
+```
+
+
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
